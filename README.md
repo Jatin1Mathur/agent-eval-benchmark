@@ -55,10 +55,9 @@ uv sync --extra dev
 uv run pytest -q                                   # 44 tests (incl. one per golden case)
 uv run agent-eval --models reference --gate        # golden-set regression gate
 
-# benchmark real local models and prompt variants, judged by an LLM
-ollama pull llama3.1:8b && ollama pull qwen2.5:7b
-uv run agent-eval --models ollama:llama3.1:8b ollama:qwen2.5:7b \
-                  --prompts baseline tool_first cot_brief --judge ollama:llama3.1:8b
+# benchmark real local models and prompt variants, judged by an LLM (one command)
+./scripts/run_ollama_benchmark.sh                    # qwen2.5:7b, llama3.1:8b, llama3.2:3b
+./scripts/run_ollama_benchmark.sh qwen2.5:7b         # or pick your own models
 ```
 
 Outputs go to `results/`: `runs.csv` (one row per case), `summary.csv` and `summary.md`

@@ -80,14 +80,17 @@ def summarize(df: pd.DataFrame, expected_risk: dict[str, str]) -> pd.DataFrame:
     """One row per (model, prompt_variant) with the headline metrics."""
     out = []
     for (model, variant), g in df.groupby(["model", "prompt_variant"], sort=False):
-        true_high = g["case_id"].map(expected_risk).eq("high")
-        p, r, f1 = _prf(true_high, g["risk"].eq("high"))
+        truth = g["case_id"].map(expected_risk)
+        p, r, f1 = _prf(truth.eq("high"), g["risk"].eq("high"))
+        per_class = [_prf(truth.eq(c), g["risk"].eq(c)) for c in ("low", "medium", "high")]
         out.append(
             {
                 "model": model,
                 "prompt": variant,
                 "task_success": g["task_success"].mean(),
                 "routing_acc": g["route_correct"].mean(),
+                "risk_macro_precision": sum(x[0] for x in per_class) / 3,
+                "risk_macro_recall": sum(x[1] for x in per_class) / 3,
                 "high_risk_precision": p,
                 "high_risk_recall": r,
                 "high_risk_f1": f1,

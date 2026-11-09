@@ -1,0 +1,7 @@
+{
+  "task_success": 0.95,
+  "routing_acc": 1.0,
+  "high_risk_recall": 1.0,
+  "tool_selection_acc": 0.95,
+  "tool_args_acc": 0.95
+}
